@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drew &amp; Holly's New Condo</title>
+<meta name="description" content="Photos of our new condo near Teele Square, Somerville, MA.">
+<meta property="og:title" content="Drew &amp; Holly's New Condo">
+<meta property="og:description" content="Photos of our new place near Teele Square, Somerville, MA.">
+<meta property="og:image" content="img/full/01.jpg">
+<style>
+  :root { --bg:#faf8f5; --ink:#2b2b2b; --muted:#777; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  header { text-align:center; padding:3rem 1rem 2rem; }
+  h1 { margin:0; font-weight:normal; font-size:clamp(1.8rem, 5vw, 3rem); }
+  header p { margin:.6rem 0 0; color:var(--muted); font-style:italic; }
+  main { max-width:1200px; margin:0 auto; padding:0 1rem 3rem; columns:3 300px; column-gap:1rem; }
+  figure { margin:0 0 1rem; break-inside:avoid; cursor:zoom-in; overflow:hidden; border-radius:4px; background:#ddd; }
+  figure img { display:block; width:100%; height:auto; transition:transform .25s; }
+  figure:hover img { transform:scale(1.03); }
+  footer { text-align:center; color:var(--muted); padding:0 1rem 3rem; font-size:.9rem; }
+  #lb { position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:10; }
+  #lb.open { display:flex; }
+  #lb img { max-width:94vw; max-height:90vh; object-fit:contain; }
+  #lb button { position:absolute; background:none; border:0; color:#fff; font-size:2.5rem; cursor:pointer; padding:1rem; opacity:.8; }
+  #lb button:hover { opacity:1; }
+  #prev { left:0; top:50%; transform:translateY(-50%); }
+  #next { right:0; top:50%; transform:translateY(-50%); }
+  #close { right:0; top:0; }
+  #count { position:absolute; bottom:1rem; color:#ccc; font:.9rem sans-serif; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Drew &amp; Holly's New Condo</h1>
+  <p>Teele Square, Somerville, MA</p>
+</header>
+<main id="grid"></main>
+<footer>Click any photo to enlarge.</footer>
+
+<div id="lb" role="dialog" aria-label="Photo viewer">
+  <button id="close" aria-label="Close">&times;</button>
+  <button id="prev" aria-label="Previous">&#8249;</button>
+  <img id="lbimg" alt="">
+  <button id="next" aria-label="Next">&#8250;</button>
+  <div id="count"></div>
+</div>
+
+<script>
+const photos = [
+  ["01.jpg","Front exterior"],["02.jpg","Floor plan"],
+  ["03.jpg","Living room"],["04.jpg","Living room"],["05.jpg","Living room"],["06.jpg","Living room"],
+  ["07.jpg","Dining area"],["08.jpg","Dining area"],["09.jpg","Dining area"],
+  ["10.jpg","Kitchen"],["11.jpg","Kitchen"],["12.jpg","Kitchen"],["13.jpg","Kitchen"],
+  ["14.jpg","Bathroom"],["15.jpg","Bathroom"],
+  ["16.jpg","Office"],["17.jpg","Office"],["18.jpg","Stairs"],
+  ["19.jpg","Bathroom"],["20.jpg","Bathroom"],["21.jpg","Bathroom"],
+  ["22.jpg","Bedroom"],["23.jpg","Bedroom"],["24.jpg","Bedroom"],
+  ["25.jpg","Backyard"],["26.jpg","Backyard"]
+];
+const grid = document.getElementById("grid"), lb = document.getElementById("lb"),
+      lbimg = document.getElementById("lbimg"), count = document.getElementById("count");
+let cur = 0;
+photos.forEach(([f, alt], i) => {
+  const fig = document.createElement("figure");
+  const img = new Image();
+  img.src = "img/thumb/" + f; img.alt = alt; img.loading = "lazy";
+  fig.appendChild(img); fig.onclick = () => show(i); grid.appendChild(fig);
+});
+function show(i) {
+  cur = (i + photos.length) % photos.length;
+  lbimg.src = "img/full/" + photos[cur][0]; lbimg.alt = photos[cur][1];
+  count.textContent = (cur + 1) + " / " + photos.length;
+  lb.classList.add("open");
+}
+const hide = () => lb.classList.remove("open");
+document.getElementById("close").onclick = hide;
+document.getElementById("prev").onclick = e => { e.stopPropagation(); show(cur - 1); };
+document.getElementById("next").onclick = e => { e.stopPropagation(); show(cur + 1); };
+lb.onclick = e => { if (e.target === lb) hide(); };
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") hide();
+  if (e.key === "ArrowLeft") show(cur - 1);
+  if (e.key === "ArrowRight") show(cur + 1);
+});
+</script>
+</body>
+</html>
